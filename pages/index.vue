@@ -1,14 +1,18 @@
 <template>
   <div>
     <HeaderTop @active-link="handleActiveLink" />
-    <HeaderBottom v-if="selectedLink === 'main'" :checkIsActive="checkIsActive" v-model="selectedFont" :editor="editor"
-      @trig-func="allFunctions" @font-selected="selectFontHandler" @selected-color="selectedColorHandler"
-      @line-height="lineHeightHandler" />
-    <HeaderBottom2 v-else-if="selectedLink === 'paste'"></HeaderBottom2>
-    <HeaderBottom3 v-else-if="selectedLink === 'pageLayout'"></HeaderBottom3>
+    <HeaderBottom v-show="selectedLink === 'main'" :checkIsActive="checkIsActive" v-model="selectedFont"
+      :editor="editor" @trig-func="allFunctions" @font-selected="selectFontHandler"
+      @selected-color="selectedColorHandler" @line-height="lineHeightHandler" />
+    <HeaderBottom2 v-show="selectedLink === 'paste'" @trig-table="trigTableHandler"></HeaderBottom2>
+    <HeaderBottom3 v-show="selectedLink === 'pageLayout'"></HeaderBottom3>
     <div class="flex flex-col items-center justify-center py-12 bg-gray-100">
-      <horizontal-ruler class=""></horizontal-ruler>
-      <TipTapEditor class="w-[816px] h-[1056px]" :editor="editor" />
+      <div @contextmenu.prevent="handleRightClick" class="w-[100%] h-[100%] flex items-center justify-center">
+
+
+        <horizontal-ruler class=""></horizontal-ruler>
+        <TipTapEditor class="w-[816px] h-[1056px]" :editor="editor" />
+      </div>
     </div>
     <div class="h-[100px]"></div>
   </div>
@@ -33,13 +37,11 @@ import ListItem from '@tiptap/extension-list-item'
 import Subscript from '@tiptap/extension-subscript'
 
 
-// import Document from '@tiptap/extension-document'
-// import Gapcursor from '@tiptap/extension-gapcursor'
-// import Paragraph from '@tiptap/extension-paragraph'
-// import Table from '@tiptap/extension-table'
-// import TableCell from '@tiptap/extension-table-cell'
-// import TableHeader from '@tiptap/extension-table-header'
-// import TableRow from '@tiptap/extension-table-row'
+import Table from '@tiptap/extension-table'
+import TableCell from '@tiptap/extension-table-cell'
+import TableHeader from '@tiptap/extension-table-header'
+import TableRow from '@tiptap/extension-table-row'
+
 import HeaderBottom from '../components/Header/HeaderBottom.vue'
 import HeaderTop from '../components/Header/HeaderTop.vue'
 import TipTapEditor from '../components/TipTapEditor.vue'
@@ -240,15 +242,12 @@ export default {
           types: ['heading', 'paragraph'],
         }),
         Color,
-        // Table.configure({
-        //   resizable: true,
-        // }),
-        // TableRow,
-        // TableHeader,
-        // Default TableCell
-        // TableCell,
-        // Custom TableCell with backgroundColor attribute
-        // CustomTableCell,
+        Table.configure({
+          resizable: true,
+        }),
+        TableRow,
+        TableHeader,
+        TableCell,
       ],
     })
   },
@@ -256,6 +255,13 @@ export default {
     this.editor.destroy()
   },
   methods: {
+
+    handleRightClick(event) {
+      // Your custom logic goes here
+      alert('Right-click detected!');
+      console.log('Right-click event:', event);
+    },
+
     handleActiveLink(link) {
       this.selectedLink = link
     },
@@ -500,41 +506,49 @@ export default {
       }
     },
 
-    // if (!this.editor) {
-    //   // Ensure editor is initialized
-    //   return
-    // }
-
-    // const { tr } = this.editor.view.state
-
-    // if (!tr.selection) {
-    //   // Ensure selection is defined
-    //   return
-    // }
-
-    // if (val === 'undo') {
-    //   this.editor.chain().focus().undo().run()
-    // } else if (val === 'redo') {
-    //   this.editor.chain().focus().redo().run()
-    // } else if (val === 'cut') {
-    //   this.editor.commands.cut()
-    // } else if (val === 'copy') {
-    //   this.editor.commands.copy()
-    // } else if (val === 'paste') {
-    //   this.editor.commands.paste()
-    // } else if (val === 'increaseSize') {
-    //   // this.editor.chain().focus().increaseFontSize().run();
-    // }
-
-    // if (val === 'increaseSize') {
-    //   this.editor.commands.increaseFontSizeCommand()()
-    // }
-
-    // this.$refs.undoFuncHandler.takeFirst(val)
     updateFont({ font, size }) {
       this.selectedFont = font
       this.selectedFontSize = size
     },
+
+    trigTableHandler(funcName) {
+      if (funcName === 'insertTable') {
+        console.log(' ishlavoti  ')
+        this.editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+      }
+
+      if (funcName === 'deleteTable') {
+        this.editor.chain().focus().deleteTable().run()
+      }
+
+      if (funcName === 'addColumnBefore') {
+        this.editor.chain().focus().addColumnBefore().run()
+      }
+
+      if (funcName === 'addColumnAfter') {
+        this.editor.chain().focus().addColumnAfter().run()
+      }
+
+      if (funcName === 'deleteColumn') {
+        this.editor.chain().focus().deleteColumn().run()
+      }
+
+      if (funcName === 'addRowBefore') {
+        this.editor.chain().focus().addRowBefore().run()
+      }
+
+      // if(funcName === 'addRowBefore') {
+      //   this.editor.chain().focus().addRowBefore().run()
+      // }
+
+      if (funcName === 'addRowAfter') {
+        this.editor.chain().focus().addRowAfter().run()
+      }
+
+      if (funcName === 'deleteRow') {
+        this.editor.chain().focus().deleteRow().run()
+      }
+    }
   },
 }
 
@@ -546,5 +560,129 @@ export default {
 
 .khzuck {
   font-family: MyCustomFont, sans-serif;
+}
+
+/* ".tiptap {
+  margin: 1rem 0;
+}" */
+
+.tiptap>*+* {
+  margin-top: 0.75em;
+}
+
+.tiptap ul,
+.tiptap ol {
+  padding: 0 1rem;
+  color: #000;
+}
+
+.tiptap h1,
+.tiptap h2,
+.tiptap h3,
+.tiptap h4,
+.tiptap h5,
+.tiptap h6 {
+  line-height: 1.1;
+}
+
+.tiptap code {
+  background-color: rgba(97, 97, 97, 0.1);
+  color: #616161;
+}
+
+.tiptap pre {
+  background: #0d0d0d;
+  color: #fff;
+  font-family: 'JetBrainsMono', monospace;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.tiptap pre code {
+  color: inherit;
+  padding: 0;
+  background: none;
+  font-size: 0.8rem;
+}
+
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+}
+
+.tiptap blockquote {
+  padding-left: 1rem;
+  border-left: 2px solid rgba(13, 13, 13, 0.1);
+}
+
+.tiptap hr {
+  border: none;
+  border-top: 2px solid rgba(13, 13, 13, 0.1);
+  margin: 2rem 0;
+}
+
+/* Table-specific styling */
+.tiptap table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.tiptap table td,
+.tiptap table th {
+  min-width: 1em;
+  border: 2px solid #ced4da;
+  padding: 3px 5px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.tiptap table td>*,
+.tiptap table th>* {
+  margin-bottom: 0;
+}
+
+.tiptap table th {
+  font-weight: bold;
+  text-align: left;
+  background-color: #f1f3f5;
+}
+
+.tiptap table .selectedCell:after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(200, 200, 255, 0.4);
+  pointer-events: none;
+}
+
+.tiptap table .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: -2px;
+  width: 4px;
+  background-color: #adf;
+  pointer-events: none;
+}
+
+.tiptap table p {
+  margin: 0;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.resize-cursor {
+  cursor: ew-resize;
+  cursor: col-resize;
 }
 </style>

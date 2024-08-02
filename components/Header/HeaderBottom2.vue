@@ -2,13 +2,70 @@
     <div>
         <ul class="bg-[] border-b border-b-solid py-1 px-2 flex items-center gap-3 flex-wrap">
             <li>
-                <button title="Cохранить"
+                <button title="insertTable" @click="$emit('trig-table', 'insertTable')"
                     class="flex items-center gap-2 py-1 px-3 transition hover:bg-[#edf5ef] rounded">
-                    <img class="w-[18px]" src="../../assets/svg/save.svg" alt="save" />
-                    <span class="">Сохранить</span>
+                    <span class="">insertTable</span>
+                </button>
+            </li>
+            <li>
+                <button title="deleteTable" @click="$emit('trig-table', 'deleteTable')"
+                    class="flex items-center gap-2 py-1 px-3 transition hover:bg-[#edf5ef] rounded">
+                    <span class="">deleteTable</span>
+                </button>
+            </li>
+            <li>
+                <button title="addColumnBefore"
+                    class="flex items-center gap-2 py-1 px-3 transition hover:bg-[#edf5ef] rounded"
+                    @click="$emit('trig-table', 'addColumnBefore')">
+                    <span class="">addColumnBefore</span>
+                </button>
+            </li>
+            <li>
+                <button title="addColumnAfter"
+                    class="flex items-center gap-2 py-1 px-3 transition hover:bg-[#edf5ef] rounded"
+                    @click="$emit('trig-table', 'addColumnAfter')">
+                    <span class="">addColumnAfter</span>
+                </button>
+            </li>
+            <li>
+                <button title="deleteColumn"
+                    class="flex items-center gap-2 py-1 px-3 transition hover:bg-[#edf5ef] rounded"
+                    @click="$emit('trig-table', 'deleteColumn')">
+                    <span class="">deleteColumn</span>
+                </button>
+            </li>
+            <li>
+                <button title="addRowBefore"
+                    class="flex items-center gap-2 py-1 px-3 transition hover:bg-[#edf5ef] rounded"
+                    @click="$emit('trig-table', 'addRowBefore')">
+                    <span class="">addRowBefore</span>
+                </button>
+            </li>
+            <!-- <li>
+                <button title="addRowBefore"
+                    class="flex items-center gap-2 py-1 px-3 transition hover:bg-[#edf5ef] rounded"
+                    @click="$emit('trig-table', 'addRowBefore')">
+                    <span class="">addRowBefore</span>
+                </button>
+            </li> -->
+            <li>
+                <button title="addRowAfter"
+                    class="flex items-center gap-2 py-1 px-3 transition hover:bg-[#edf5ef] rounded"
+                    @click="$emit('trig-table', 'addRowAfter')">
+                    <span class="">addRowAfter</span>
+                </button>
+            </li>
+            <li>
+                <button title="deleteRow"
+                    class="flex items-center gap-2 py-1 px-3 transition hover:bg-[#edf5ef] rounded"
+                    @click="$emit('trig-table', 'deleteRow')">
+                    <span class="">deleteRow</span>
                 </button>
             </li>
         </ul>
+
+
+
 
         <div v-if="editor">
             <button class="border border-sky-500"
@@ -82,7 +139,7 @@ export default {
             required: true,
         }
     },
-    
+
     data() {
 
     },
